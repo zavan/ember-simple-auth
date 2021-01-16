@@ -91,6 +91,10 @@ export default ObjectProxy.extend(Evented, {
     });
   },
 
+  // willDestroy() {
+  //   this._unbindFromAuthenticatorEvents();
+  // },
+
   _setup(authenticator, authenticatedContent, trigger) {
     trigger = Boolean(trigger) && !this.get('isAuthenticated');
     this.setProperties({
@@ -157,11 +161,29 @@ export default ObjectProxy.extend(Evented, {
     authenticator.on('sessionDataInvalidated', this, this._onSessionDataInvalidated);
   },
 
+  // _unbindFromAuthenticatorEvents() {
+  //   if (!this.authenticator) {
+  //     return;
+  //   }
+
+  //   const authenticator = this._lookupAuthenticator(this.authenticator);
+  //   authenticator.off('sessionDataUpdated', this, this._onSessionDataUpdated);
+  //   authenticator.off('sessionDataInvalidated', this, this._onSessionDataInvalidated);
+  // },
+
   _onSessionDataUpdated(content) {
+    if (this.isDestroyed) {
+      return;
+    }
+
     this._setup(this.authenticator, content);
   },
 
   _onSessionDataInvalidated() {
+    if (this.isDestroyed) {
+      return;
+    }
+
     this._clear(true);
   },
 

@@ -44,6 +44,19 @@ describe('InternalSession', () => {
         return preparation.call();
       });
 
+      describe('when the session object is destroyed', function() {
+        beforeEach(function() {
+          session.destroy();
+        });
+
+        it('does not throw', function(done) {
+          next(() => {
+            expect(() => authenticator.trigger('sessionDataUpdated', {})).to.not.throw();
+            done();
+          });
+        });
+      });
+
       it('stores the data the event is triggered with in its authenticated section', function(done) {
         authenticator.trigger('sessionDataUpdated', { some: 'property' });
 
@@ -57,6 +70,19 @@ describe('InternalSession', () => {
     describe('when the authenticator triggers the "invalidated" event', function() {
       beforeEach(function() {
         return preparation.call();
+      });
+
+      describe('when the session object is destroyed', function() {
+        beforeEach(function() {
+          session.destroy();
+        });
+
+        it('does not throw', function(done) {
+          next(() => {
+            expect(() => authenticator.trigger('sessionDataInvalidated')).to.not.throw();
+            done();
+          });
+        });
       });
 
       it('is not authenticated', function(done) {
